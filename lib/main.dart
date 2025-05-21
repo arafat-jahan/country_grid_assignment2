@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: CountryGrid(),
-  ));
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      useInheritedMediaQuery: true,
+      debugShowCheckedModeBanner: false,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      home: CountryGrid(),
+    );
+  }
 }
 
 class CountryGrid extends StatelessWidget {
@@ -12,82 +28,91 @@ class CountryGrid extends StatelessWidget {
     {
       'flag': 'https://flagcdn.com/w320/bd.png',
       'title': 'Bangladesh is a beautiful country.\nIt has many rivers.\nIt’s full of greenery.',
-      'info': '👥 Population: 170M 🗺️ Tourist Spot: Cox’s Bazar',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/us.png',
       'title': 'USA is a developed country.\nIt’s known for technology.\nAlso famous for freedom.',
-      'info': '👥 Population: 331M 🗺️ Tourist Spot: Statue of Liberty',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/gb.png',
       'title': 'UK is a historic country.\nHas royal traditions.\nAnd iconic landmarks.',
-      'info': '👥 Population: 67M 🗺️ Tourist Spot: Big Ben',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/in.png',
       'title': 'India is a diverse country.\nMany cultures exist.\nUnity in diversity.',
-      'info': '👥 Population: 1.4B 🗺️ Tourist Spot: Taj Mahal',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/ca.png',
       'title': 'Canada is a peaceful country.\nKnown for maple leaves.\nAnd cold winters.',
-      'info': '👥 Population: 38M 🗺️ Tourist Spot: Niagara Falls',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/de.png',
       'title': 'Germany is a tech hub.\nFamous for cars.\nStrong economy.',
-      'info': '👥 Population: 83M 🗺️ Tourist Spot: Brandenburg Gate',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/fr.png',
       'title': 'France is romantic.\nCity of love – Paris.\nAlso rich in culture.',
-      'info': '👥 Population: 65M 🗺️ Tourist Spot: Eiffel Tower',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/jp.png',
       'title': 'Japan is innovative.\nTechnology and tradition.\nLand of the rising sun.',
-      'info': '👥 Population: 126M 🗺️ Tourist Spot: Mount Fuji',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/au.png',
       'title': 'Australia is sunny.\nFamous for beaches.\nAnd kangaroos!',
-      'info': '👥 Population: 25M 🗺️ Tourist Spot: Sydney Opera House',
+      'info': '👥 Population 🗺️ Places',
     },
     {
       'flag': 'https://flagcdn.com/w320/nz.png',
       'title': 'New Zealand is scenic.\nMountains and lakes.\nGreat for hiking.',
-      'info': '👥 Population: 5M 🗺️ Tourist Spot: Milford Sound',
+      'info': '👥 Population 🗺️ Places',
     },
   ];
 
   int getCrossAxisCount(double width) {
-    if (width < 600) return 2; // Mobile
-    if (width < 1024) return 3; // Tablet
-    return 4; // Desktop
+    if (width < 600) return 2;        // Mobile
+    if (width < 1024) return 3;       // Tablet
+    return 4;                         // Web/Desktop
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = getCrossAxisCount(screenWidth);
-
     return Scaffold(
       appBar: AppBar(title: Text("Country Info Grid")),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: countries.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.68,
-          ),
-          itemBuilder: (context, index) {
-            return CountryCard(country: countries[index]);
-          },
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = getCrossAxisCount(constraints.maxWidth);
+
+          return Center(
+            child: Container(
+              padding: EdgeInsets.all(12),
+              constraints: BoxConstraints(maxWidth: 1100), // web e limit kore রাখলাম
+              child: Scrollbar(
+                thumbVisibility: true,
+                child: GridView.builder(
+                  itemCount: countries.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.68,
+                  ),
+                  itemBuilder: (context, index) {
+                    return CountryCard(country: countries[index]);
+                  },
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -101,7 +126,6 @@ class CountryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     double titleFont = width < 600 ? 13 : 15;
     double infoFont = width < 600 ? 11 : 13;
 
