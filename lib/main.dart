@@ -75,6 +75,16 @@ class CountryGrid extends StatelessWidget {
       'title': 'New Zealand is scenic.\nMountains and lakes.\nGreat for hiking.',
       'info': '👥 Population 🗺️ Places',
     },
+    {
+      'flag': 'https://flagcdn.com/w320/it.png',
+      'title': 'Italy is famous for art.\nHome to the Romans.\nAnd delicious food.',
+      'info': '👥 Population 🗺️ Places',
+    },
+    {
+      'flag': 'https://flagcdn.com/w320/br.png',
+      'title': 'Brazil loves football.\nFamous for Amazon.\nAnd carnival culture.',
+      'info': '👥 Population 🗺️ Places',
+    },
   ];
 
   int getCrossAxisCount(double width) {
@@ -94,7 +104,7 @@ class CountryGrid extends StatelessWidget {
           return Center(
             child: Container(
               padding: EdgeInsets.all(12),
-              constraints: BoxConstraints(maxWidth: 1100), // web e limit kore রাখলাম
+              constraints: BoxConstraints(maxWidth: 1100),
               child: Scrollbar(
                 thumbVisibility: true,
                 child: GridView.builder(
